@@ -238,7 +238,7 @@ const std::vector<std::vector<const char*>> g_nonPrintingChars =
 	{"\xE2\x81\xAD", "AAFS", "U+206D"},      // U+206D : activate arabic form shaping
 	{"\xE2\x81\xAE", "NADS", "U+206E"},      // U+206E : national digit shapes
 	{"\xE2\x81\xAF", "NODS", "U+206F"},      // U+206F : nominal digit shapes
-	{"\xE3\x80\x80", "IDSP", "U+3000"},      // U+3000 : ideographic space
+//	  {"\xE3\x80\x80", "IDSP", "U+3000"},      // U+3000 : ideographic space
 	{"\xEF\xBB\xBF", "ZWNBSP", "U+FEFF"},    // U+FEFF : zero-width no-break space
 	{"\xEF\xBF\xB9", "IAA", "U+FFF9"},       // U+FFF9 : interlinear annotation anchor
 	{"\xEF\xBF\xBA", "IAS", "U+FFFA"},       // U+FFFA : interlinear annotation separator

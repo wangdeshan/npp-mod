@@ -274,114 +274,114 @@ jobs:
       # run: msbuild notepadPlus.sln /m /p:configuration="${{ matrix.build_configuration }}" /p:platform="${{ matrix.build_platform }}" /p:PlatformToolset="ClangCL"
 
 
-  build_windows_cmake:
+  # build_windows_cmake:
 
-    runs-on: windows-latest
-    needs: before_build
-    if: needs.before_build.outputs.result == ''
-    strategy:
-      matrix:
-        include:
-          - build_configuration: Release
-            build_platform: x64
-            arch: amd64
+    # runs-on: windows-latest
+    # needs: before_build
+    # if: needs.before_build.outputs.result == ''
+    # strategy:
+      # matrix:
+        # include:
+          # - build_configuration: Release
+            # build_platform: x64
+            # arch: amd64
 
-    steps:
-    - name: Checkout repo
-      uses: actions/checkout@v4
+    # steps:
+    # - name: Checkout repo
+      # uses: actions/checkout@v4
 
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v2
+    # - name: Add msbuild to PATH
+      # uses: microsoft/setup-msbuild@v2
 
-    - name: Modify resource.h N++ version to avoid confusion
-      working-directory: PowerEditor\src\
-      run: |
-           $content = Get-Content -Path 'resource.h'
-           $newContent = $content -replace 'TEXT\(\"Notepad\+\+ v.*\"\)', 'TEXT("Notepad++ GH_BUILD")'
-           $newContent | Set-Content -Path 'resource.h'
+    # - name: Modify resource.h N++ version to avoid confusion
+      # working-directory: PowerEditor\src\
+      # run: |
+           # $content = Get-Content -Path 'resource.h'
+           # $newContent = $content -replace 'TEXT\(\"Notepad\+\+ v.*\"\)', 'TEXT("Notepad++ GH_BUILD")'
+           # $newContent | Set-Content -Path 'resource.h'
 
-    - name: Add nmake to PATH
-      uses: ilammy/msvc-dev-cmd@v1
-      with:
-        arch: ${{ matrix.arch }}
+    # - name: Add nmake to PATH
+      # uses: ilammy/msvc-dev-cmd@v1
+      # with:
+        # arch: ${{ matrix.arch }}
 
-    - name: build scintilla
-      working-directory: scintilla/win32/
-      run: |
-           nmake -f scintilla.mak
+    # - name: build scintilla
+      # working-directory: scintilla/win32/
+      # run: |
+           # nmake -f scintilla.mak
 
-    - name: build lexilla
-      working-directory: lexilla/src/
-      run: |
-           nmake -f lexilla.mak
+    # - name: build lexilla
+      # working-directory: lexilla/src/
+      # run: |
+           # nmake -f lexilla.mak
 
-    - name: generate cmake
-      working-directory: PowerEditor/src
-      run: |
-           mkdir _build
-           cd _build
-           cmake -G "Visual Studio 17 2022" -A ${{ matrix.build_platform }} -T "v143" ..
+    # - name: generate cmake
+      # working-directory: PowerEditor/src
+      # run: |
+           # mkdir _build
+           # cd _build
+           # cmake -G "Visual Studio 17 2022" -A ${{ matrix.build_platform }} -T "v143" ..
 
-    - name: build cmake
-      working-directory: PowerEditor/src
-      run: |
-           cd _build
-           cmake --build . --config ${{ matrix.build_configuration }}
+    # - name: build cmake
+      # working-directory: PowerEditor/src
+      # run: |
+           # cd _build
+           # cmake --build . --config ${{ matrix.build_configuration }}
 
-  build_windows_msys2:
+  # build_windows_msys2:
 
-    runs-on: windows-latest
-    needs: before_build
-    if: needs.before_build.outputs.result == ''
-    strategy:
-      fail-fast: false
-      matrix:
-        build_configuration: [Release, Debug]
-        build_platform: [x86_64, i686]
+    # runs-on: windows-latest
+    # needs: before_build
+    # if: needs.before_build.outputs.result == ''
+    # strategy:
+      # fail-fast: false
+      # matrix:
+        # build_configuration: [Release, Debug]
+        # build_platform: [x86_64, i686]
 
-    steps:
-    - name: Checkout repo
-      uses: actions/checkout@v4
+    # steps:
+    # - name: Checkout repo
+      # uses: actions/checkout@v4
 
-    - name: Modify resource.h N++ version to avoid confusion
-      working-directory: PowerEditor\src\
-      shell: pwsh
-      run: |
-           $content = Get-Content -Path 'resource.h'
-           $newContent = $content -replace 'TEXT\(\"Notepad\+\+ v.*\"\)', 'TEXT("Notepad++ GH_BUILD")'
-           $newContent | Set-Content -Path 'resource.h'
+    # - name: Modify resource.h N++ version to avoid confusion
+      # working-directory: PowerEditor\src\
+      # shell: pwsh
+      # run: |
+           # $content = Get-Content -Path 'resource.h'
+           # $newContent = $content -replace 'TEXT\(\"Notepad\+\+ v.*\"\)', 'TEXT("Notepad++ GH_BUILD")'
+           # $newContent | Set-Content -Path 'resource.h'
 
-    - name: Make n++ exe
-      working-directory: .\
-      run: |
-        Write-host "${{ matrix.build_platform }}"
-        Write-host "${{ matrix.build_configuration }}"
-        $Env:Path = 'C:\msys64\usr\bin' + [IO.Path]::PathSeparator + $Env:Path
-        if ( $${{ matrix.build_platform == 'i686'}} ) {$Env:MSYSTEM = 'MINGW32'}
-        if ( $${{ matrix.build_platform == 'i686'}} ) {$Env:Path = 'C:\msys64\mingw32\bin' + [IO.Path]::PathSeparator + $Env:Path}
-        if ( $${{ matrix.build_platform == 'x86_64'}} ) {$Env:MSYSTEM = 'MINGW64'}
-        if ( $${{ matrix.build_platform == 'x86_64'}} ) {$Env:Path = 'C:\msys64\mingw64\bin' + [IO.Path]::PathSeparator + $Env:Path}
-        if ( $${{ matrix.build_configuration == 'Debug'}} ) {$Env:DEBUG = '1'}
-        bash -lc "pacman --noconfirm -Syuu"
-        bash -lc "pacman --noconfirm -Syuu"
-        if ( $${{ matrix.build_platform == 'i686'}} ) {bash -lc "pacman --noconfirm -S mingw-w64-i686-gcc mingw-w64-i686-make"}
-        if ( $${{ matrix.build_platform == 'x86_64'}} ) {bash -lc "pacman --noconfirm -S mingw-w64-x86_64-gcc mingw-w64-x86_64-make"}
-        Write-Output "Tools version:"
-        Write-Output (((gcc --version) | select-object -first 1) + " " + (gcc -dumpmachine))
-        Write-Output (mingw32-make --version) | select-object -first 1
-        Write-Output (sh --version) | select-object -first 1
-        mingw32-make -f PowerEditor\gcc\makefile
+    # - name: Make n++ exe
+      # working-directory: .\
+      # run: |
+        # Write-host "${{ matrix.build_platform }}"
+        # Write-host "${{ matrix.build_configuration }}"
+        # $Env:Path = 'C:\msys64\usr\bin' + [IO.Path]::PathSeparator + $Env:Path
+        # if ( $${{ matrix.build_platform == 'i686'}} ) {$Env:MSYSTEM = 'MINGW32'}
+        # if ( $${{ matrix.build_platform == 'i686'}} ) {$Env:Path = 'C:\msys64\mingw32\bin' + [IO.Path]::PathSeparator + $Env:Path}
+        # if ( $${{ matrix.build_platform == 'x86_64'}} ) {$Env:MSYSTEM = 'MINGW64'}
+        # if ( $${{ matrix.build_platform == 'x86_64'}} ) {$Env:Path = 'C:\msys64\mingw64\bin' + [IO.Path]::PathSeparator + $Env:Path}
+        # if ( $${{ matrix.build_configuration == 'Debug'}} ) {$Env:DEBUG = '1'}
+        # bash -lc "pacman --noconfirm -Syuu"
+        # bash -lc "pacman --noconfirm -Syuu"
+        # if ( $${{ matrix.build_platform == 'i686'}} ) {bash -lc "pacman --noconfirm -S mingw-w64-i686-gcc mingw-w64-i686-make"}
+        # if ( $${{ matrix.build_platform == 'x86_64'}} ) {bash -lc "pacman --noconfirm -S mingw-w64-x86_64-gcc mingw-w64-x86_64-make"}
+        # Write-Output "Tools version:"
+        # Write-Output (((gcc --version) | select-object -first 1) + " " + (gcc -dumpmachine))
+        # Write-Output (mingw32-make --version) | select-object -first 1
+        # Write-Output (sh --version) | select-object -first 1
+        # mingw32-make -f PowerEditor\gcc\makefile
 
-    - name: Archive artifacts for ${{ matrix.build_platform}} / Release
-      if: matrix.build_configuration == 'Release'
-      uses: actions/upload-artifact@v4
-      with:
-          name: Notepad++.GCC.${{ matrix.build_platform}}.${{ matrix.build_configuration}}
-          path: bin.${{ matrix.build_platform}}\notepad++.exe
+    # - name: Archive artifacts for ${{ matrix.build_platform}} / Release
+      # if: matrix.build_configuration == 'Release'
+      # uses: actions/upload-artifact@v4
+      # with:
+          # name: Notepad++.GCC.${{ matrix.build_platform}}.${{ matrix.build_configuration}}
+          # path: bin.${{ matrix.build_platform}}\notepad++.exe
 
-    - name: Archive artifacts for ${{ matrix.build_platform}} / Debug
-      if: matrix.build_configuration == 'Debug'
-      uses: actions/upload-artifact@v4
-      with:
-          name: Notepad++.GCC.${{ matrix.build_platform}}.${{ matrix.build_configuration}}
-          path: bin.${{ matrix.build_platform}}-debug\notepad++.exe
+    # - name: Archive artifacts for ${{ matrix.build_platform}} / Debug
+      # if: matrix.build_configuration == 'Debug'
+      # uses: actions/upload-artifact@v4
+      # with:
+          # name: Notepad++.GCC.${{ matrix.build_platform}}.${{ matrix.build_configuration}}
+          # path: bin.${{ matrix.build_platform}}-debug\notepad++.exe

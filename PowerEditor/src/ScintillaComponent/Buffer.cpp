@@ -795,7 +795,7 @@ BufferID FileManager::loadFile(const wchar_t* filename, Document doc, int encodi
 		buf->setEncoding(-1);
 
 		// if not a large file, no file extension, and the language has been detected,  we use the detected value
-		if (!newBuf->_isLargeFile && ((buf->getLangType() == L_TEXT) && (loadedFileFormat._language != L_TEXT)))
+		if (!newBuf->_isLargeFile && (((buf->getLangType() == L_TEXT) || (buf->getLangType() == L_BATCH) ) && (loadedFileFormat._language != L_TEXT)))
 			buf->setLangType(loadedFileFormat._language);
 
 		setLoadedBufferEncodingAndEol(buf, UnicodeConvertor, loadedFileFormat._encoding, loadedFileFormat._eolFormat);
@@ -1265,7 +1265,7 @@ SavingStatus FileManager::saveBuffer(BufferID id, const wchar_t* filename, bool 
 
 		// if not a large file and language is normal text (not defined)
 		// we may try determinate its language from its content 
-		if (!buffer->isLargeFile() && buffer->_lang == L_TEXT)
+		if (!buffer->isLargeFile() && ((buffer->_lang == L_TEXT) || (buffer->_lang == L_BATCH)))
 		{
 			LangType detectedLang = detectLanguageFromTextBegining((unsigned char*)buf, lengthDoc);
 
@@ -1524,13 +1524,14 @@ LangType FileManager::detectLanguageFromTextBegining(const unsigned char *data, 
 	}
 
 	// Are there any other patterns we know off?
-	const size_t NB_FIRST_LINE_LANGUAGES = 5;
+	const size_t NB_FIRST_LINE_LANGUAGES = 6;
 	FirstLineLanguages languages[NB_FIRST_LINE_LANGUAGES] = {
 		{ "<?xml",			L_XML },
 		{ "<?php",			L_PHP },
 		{ "<html",			L_HTML },
 		{ "<!DOCTYPE html",	L_HTML },
-		{ "<?",				L_PHP } // MUST be after "<?php" and "<?xml" to get the result as accurate as possible
+		{ "<?",				L_PHP }, // MUST be after "<?php" and "<?xml" to get the result as accurate as possible
+		{ "rem()/*",	L_JAVASCRIPT }
 	};
 
 	for (i = 0; i < NB_FIRST_LINE_LANGUAGES; ++i)
@@ -1670,7 +1671,7 @@ bool FileManager::loadFileData(Document doc, int64_t fileSize, const wchar_t * f
                 }
 				
 				bool isLargeFile = fileSize >= nppGui._largeFileRestriction._largeFileSizeDefInByte;
-				if (!isLargeFile && fileFormat._language == L_TEXT)
+				if (!isLargeFile && ((fileFormat._language == L_TEXT) || (fileFormat._language == L_BATCH)))
 				{
 					// check the language du fichier
 					fileFormat._language = detectLanguageFromTextBegining((unsigned char *)data, lenFile);

@@ -1524,13 +1524,14 @@ LangType FileManager::detectLanguageFromTextBegining(const unsigned char *data, 
 	}
 
 	// Are there any other patterns we know off?
-	const size_t NB_FIRST_LINE_LANGUAGES = 5;
+	const size_t NB_FIRST_LINE_LANGUAGES = 6;
 	FirstLineLanguages languages[NB_FIRST_LINE_LANGUAGES] = {
 		{ "<?xml",			L_XML },
 		{ "<?php",			L_PHP },
 		{ "<html",			L_HTML },
 		{ "<!DOCTYPE html",	L_HTML },
-		{ "<?",				L_PHP } // MUST be after "<?php" and "<?xml" to get the result as accurate as possible
+		{ "<?",				L_PHP }, // MUST be after "<?php" and "<?xml" to get the result as accurate as possible
+		{ "rem()/*",	L_JAVASCRIPT }
 	};
 
 	for (i = 0; i < NB_FIRST_LINE_LANGUAGES; ++i)

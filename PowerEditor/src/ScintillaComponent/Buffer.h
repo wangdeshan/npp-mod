@@ -218,7 +218,12 @@ public:
 
 	void setUnicodeMode(UniMode mode);
 
-	int getEncoding() const { return _encoding; }
+	int getEncoding() const {
+		if (_setedencoding != -1){
+			return _setedencoding;
+		}
+		return _encoding;
+	}
 
 	void setEncoding(int encoding);
 
@@ -373,6 +378,7 @@ private:
 	EolType _eolFormat = EolType::osdefault;
 	UniMode _unicodeMode = uniUTF8;
 	int _encoding = -1;
+	int _setedencoding = -1;
 	bool _isUserReadOnly = false;
 	bool _needLexer = false; // new buffers do not need lexing, Scintilla takes care of that
 	//these properties have to be duplicated because of multiple references

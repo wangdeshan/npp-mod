@@ -113,6 +113,7 @@ void Buffer::setDirty(bool dirty)
 void Buffer::setEncoding(int encoding)
 {
 	_encoding = encoding;
+	_setedencoding = encoding;
 	doNotify(BufferChangeUnicode | BufferChangeDirty);
 }
 

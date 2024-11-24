@@ -87,7 +87,7 @@
 
 LangString langFileName ${LANG_ENGLISH} "english.xml"
 LangString langFileName ${LANG_FRENCH} "french.xml"
-LangString langFileName ${LANG_TRADCHINESE} "taiwaneseMandarin.xml"
+LangString langFileName ${LANG_TRADCHINESE} "ChineseTraditional.xml"
 LangString langFileName ${LANG_SIMPCHINESE} "chineseSimplified.xml"
 LangString langFileName ${LANG_KOREAN} "korean.xml"
 LangString langFileName ${LANG_JAPANESE} "japanese.xml"

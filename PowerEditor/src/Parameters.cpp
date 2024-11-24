@@ -4543,7 +4543,7 @@ std::wstring NppParameters::getLocPathFromStr(const std::wstring & localizationC
 	if (localizationCode == L"ca")
 		return L"catalan.xml";
 	if (localizationCode == L"zh-tw" || localizationCode == L"zh-hk" || localizationCode == L"zh-sg")
-		return L"taiwaneseMandarin.xml";
+		return L"ChineseTraditional.xml";
 	if (localizationCode == L"zh" || localizationCode == L"zh-cn")
 		return L"chineseSimplified.xml";
 	if (localizationCode == L"co" || localizationCode == L"co-fr")

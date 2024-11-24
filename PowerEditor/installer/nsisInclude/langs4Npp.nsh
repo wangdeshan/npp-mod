@@ -245,8 +245,8 @@ SectionGroup "Localization" localization
 	${MementoUnselectedSection} "Tagalog" tagalog
 		CopyFiles "$PLUGINSDIR\nppLocalization\tagalog.xml" "$INSTDIR\localization\tagalog.xml"
 	${MementoSectionEnd}
-	${MementoUnselectedSection} "Taiwanese Mandarin" chineseTraditional
-		CopyFiles "$PLUGINSDIR\nppLocalization\taiwaneseMandarin.xml" "$INSTDIR\localization\taiwaneseMandarin.xml"
+	${MementoUnselectedSection} "Chinese Traditional" chineseTraditional
+		CopyFiles "$PLUGINSDIR\nppLocalization\ChineseTraditional.xml" "$INSTDIR\localization\ChineseTraditional.xml"
 	${MementoSectionEnd}
 	${MementoUnselectedSection} "Tajik" tajik
 		CopyFiles "$PLUGINSDIR\nppLocalization\tajikCyrillic.xml" "$INSTDIR\localization\tajikCyrillic.xml"
@@ -344,7 +344,7 @@ SectionGroup un.localization
 	SectionEnd
 	Section un.chineseTraditional
 		Delete "$INSTDIR\localization\chinese.xml"
-		Delete "$INSTDIR\localization\taiwaneseMandarin.xml"
+		Delete "$INSTDIR\localization\ChineseTraditional.xml"
 	SectionEnd
 	Section un.chineseSimplified
 		Delete "$INSTDIR\localization\chineseSimplified.xml"
